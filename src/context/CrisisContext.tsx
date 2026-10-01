@@ -366,7 +366,7 @@ export const CrisisProvider: React.FC<{ children: ReactNode }> = ({ children }) 
       assignedResourceIds: [],
       confidence: 85,
       lastUpdated: new Date().toISOString(),
-      aiInsights: [],
+      aiInsights: 'Initial triage pending AI verification. Civilian reported incident queued for tactical analysis.',
       liveTimeline: [],
       relatedIncidentIds: [] as any,
     };
