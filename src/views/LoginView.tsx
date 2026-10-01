@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useCrisis } from '../context/CrisisContext';
 import { Mail, Sun, Moon, Lock, EyeOff, Eye, Shield, Zap, Users, ArrowRight, ArrowLeft } from 'lucide-react';
 import { imageAssets } from '../data/imageAssets';
+import { authApi } from '../services/api';
 
 export const LoginView: React.FC = () => {
   const { setActiveTab, playTacticalSound, setIsAuthenticated, setUserProfile, setCurrentUserRole , theme, toggleTheme } = useCrisis();
@@ -19,17 +20,7 @@ export const LoginView: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, role }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Invalid credentials or account role.');
-      }
+      const data = await authApi.login(email, password, role);
 
       // Success
       setIsAuthenticated(true);
@@ -40,9 +31,12 @@ export const LoginView: React.FC = () => {
       });
       
       // Store token if needed (localStorage.setItem('token', data.token))
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
+      }
       
       if (data.user.role === 'ADMIN') {
-        setCurrentUserRole(data.user.operator_type || 'Crisis Operations Administrator');
+        setCurrentUserRole(data.user.operator_type || 'Control Room Operator');
         setActiveTab('dashboard'); // Admin Dashboard
       } else {
         setCurrentUserRole('USER');

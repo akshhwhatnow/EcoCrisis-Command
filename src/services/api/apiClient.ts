@@ -52,9 +52,16 @@ export async function apiRequest<T = any>(
     const data: ApiResponse<T> = await response.json();
 
     if (!response.ok) {
-      const errorMsg = data?.error?.message || `HTTP ${response.status} ${response.statusText}`;
-      const errorCode = data?.error?.code || `HTTP_${response.status}`;
-      throw new ApiError(errorMsg, response.status, errorCode, data?.error?.details);
+      const rawError = (data as any)?.error;
+      const errorMsg =
+        (typeof rawError === 'string' ? rawError : rawError?.message) ||
+        `HTTP ${response.status} ${response.statusText}`;
+      const errorCode =
+        typeof rawError === 'object' && rawError?.code
+          ? rawError.code
+          : `HTTP_${response.status}`;
+      const errorDetails = typeof rawError === 'object' ? rawError?.details : undefined;
+      throw new ApiError(errorMsg, response.status, errorCode, errorDetails);
     }
 
     return data;

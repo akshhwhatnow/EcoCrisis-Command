@@ -6,3 +6,4 @@ export * from './plansApi';
 export * from './agentsApi';
 export * from './auditApi';
 export * from './healthApi';
+export * from './authApi';

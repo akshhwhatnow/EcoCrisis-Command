@@ -91,9 +91,9 @@ export const replanningService = {
             [],
             ['River Bridge Bravo', 'North Valley Power Line'],
             3.2,
-            -122.778,
-            38.872,
-            'POLYGON((-122.785 38.868, -122.770 38.868, -122.770 38.878, -122.785 38.878, -122.785 38.868))',
+            121.222,
+            14.872,
+            'POLYGON((121.215 14.868, 121.230 14.868, 121.230 14.878, 121.215 14.878, 121.215 14.868))',
           ]
         );
 
@@ -170,7 +170,7 @@ export const replanningService = {
         impact_wildlife_species: [],
         impact_infrastructure_risk: ['River Bridge Bravo', 'North Valley Power Line'],
         impact_habitat_area_km2: 3.2,
-        location_geojson: { type: 'Point', coordinates: [-122.778, 38.872] },
+        location_geojson: { type: 'Point', coordinates: [121.222, 14.872] },
         created_at: new Date(),
         updated_at: new Date(),
       };

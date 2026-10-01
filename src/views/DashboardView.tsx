@@ -30,6 +30,7 @@ export const DashboardView: React.FC = () => {
     playTacticalSound,
     agents,
     isBackendConnected,
+    backendError,
   } = useCrisis();
 
   const [inspectorTab, setInspectorTab] = useState<'incident' | 'resource'>('incident');
@@ -51,7 +52,21 @@ export const DashboardView: React.FC = () => {
 
   return (
     <div className="p-4 sm:p-6 space-y-5 max-w-[1800px] mx-auto select-none">
-      {/* Backend Status Alert hidden for demo purposes */}
+      {/* Backend Degraded / Offline Status Alert */}
+      {!isBackendConnected && (
+        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-between text-amber-200 text-xs shadow-sm">
+          <div className="flex items-center gap-2.5">
+            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+            <span>
+              <strong>DEGRADED / SIMULATED MODE:</strong>{' '}
+              {backendError || 'Authoritative PostgreSQL/PostGIS backend is offline. Tactical data is operating on an in-memory baseline.'}
+            </span>
+          </div>
+          <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 uppercase font-semibold shrink-0">
+            Simulated Demo Baseline
+          </span>
+        </div>
+      )}
 
       {/* 4 Executive Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">

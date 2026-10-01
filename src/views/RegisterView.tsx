@@ -3,6 +3,7 @@ import { useCrisis } from '../context/CrisisContext';
 import { Mail, Sun, Moon, Lock, EyeOff, Eye, Shield, Users, CheckCircle2, User, Phone, ArrowRight, ArrowLeft, XCircle } from 'lucide-react';
 import { imageAssets } from '../data/imageAssets';
 import { UserProfile } from '../types';
+import { authApi } from '../services/api';
 
 export const RegisterView: React.FC = () => {
   const { setActiveTab, playTacticalSound, setUserProfile, setIsAuthenticated, setCurrentUserRole , theme, toggleTheme } = useCrisis();
@@ -40,19 +41,17 @@ export const RegisterView: React.FC = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('/api/auth/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ fullName, email, phone, password, role: 'USER' }),
-      });
+      const data = await authApi.register({ fullName, email, phone, password, role: 'USER' });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Registration failed.');
+      if (data.token) {
+        localStorage.setItem('auth_token', data.token);
       }
 
-      const profile: UserProfile = { fullName, email, phone };
+      const profile: UserProfile = {
+        fullName: data.user.full_name,
+        email: data.user.email,
+        phone: data.user.phone || phone,
+      };
       setUserProfile(profile);
       setIsAuthenticated(true);
       setCurrentUserRole('USER');

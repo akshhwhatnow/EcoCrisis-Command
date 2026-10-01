@@ -20,8 +20,34 @@ import authRouter from './routes/auth.js';
 export function createApp(): Express {
   const app = express();
 
-  // Core Middleware
-  app.use(cors());
+  // Production & Development CORS Configuration
+  const configuredOrigins = process.env.ALLOWED_ORIGINS || process.env.CORS_ORIGIN;
+  const allowedOriginsList = configuredOrigins
+    ? configuredOrigins.split(',').map(s => s.trim())
+    : [
+        'http://localhost:5173',
+        'http://localhost:3000',
+        'http://127.0.0.1:5173',
+        'https://eco-crisis-command.vercel.app',
+      ];
+
+  app.use(
+    cors({
+      origin: (origin, callback) => {
+        if (!origin) return callback(null, true);
+        if (
+          allowedOriginsList.includes(origin) ||
+          origin.endsWith('.vercel.app') ||
+          process.env.NODE_ENV !== 'production'
+        ) {
+          return callback(null, true);
+        }
+        return callback(new Error(`CORS origin ${origin} not allowed`));
+      },
+      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Correlation-ID'],
+    })
+  );
   app.use(express.json());
   app.use(correlationIdMiddleware);
   app.use(requestLogger);

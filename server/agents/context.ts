@@ -22,7 +22,7 @@ export async function buildAgentContext(
   try {
     incidents = await incidentRepository.findAllActive();
   } catch (err: any) {
-    incidents = INITIAL_INCIDENTS.map((i) => ({
+    incidents = INITIAL_INCIDENTS.slice(0, 3).map((i) => ({
       id: i.id,
       external_ref: `INC-${i.id}`,
       name: i.name,
